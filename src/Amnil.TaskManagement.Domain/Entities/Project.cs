@@ -27,8 +27,8 @@ namespace Amnil.TaskManagement.Entities
         {
             Name = name;
             Description = description;
-            StartDate = start;
-            EndDate = end;
+            StartDate = startDate;
+            EndDate = endDate;
         }
     }
 }

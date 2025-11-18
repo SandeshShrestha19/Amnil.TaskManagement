@@ -11,7 +11,7 @@ namespace Amnil.TaskManagement.Interfaces
 {
     public interface IProjectService : IApplicationService
     {
-        //Task<ProjectProgressDto> GetProjectProgressAsync(Guid projectId);
+        Task<ProjectProgressDto> GetProjectProgressAsync(Guid projectId);
         Task CreateProjectAsync(CreateUpdateProjectDto createDto);
         Task UpdateProjectAsync(Guid projectId, CreateUpdateProjectDto updateDto);
         Task DeleteProjectAsync(Guid projectId);

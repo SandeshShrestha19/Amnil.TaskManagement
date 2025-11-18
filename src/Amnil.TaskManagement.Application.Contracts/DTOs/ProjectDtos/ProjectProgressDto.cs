@@ -10,7 +10,7 @@ namespace Amnil.TaskManagement.DTOs.ProjectDtos
     {
         public int TotalTasks { get; set; }
         public int EstimatedHours { get; set; }
-        public int Loggedhours { get; set; }
-        public double CompletionPercentage => TotalTasks > 0 ? (double)Loggedhours / EstimatedHours * 100 : 0;
+        public int LoggedHours { get; set; }
+        public double CompletionPercentage => TotalTasks > 0 ? (double)LoggedHours / EstimatedHours * 100 : 0;
     }
 }

@@ -18,49 +18,125 @@ namespace Amnil.TaskManagement.Services
     public class ProjectService : ApplicationService, IProjectService, ITransientDependency
     {
         private readonly IRepository<Project, Guid> _projectRepository;
-        public ProjectService(IRepository<Project, Guid> projectRepository)
+        private readonly IRepository<ProjectTask, Guid> _taskRepository;
+        public ProjectService(IRepository<Project, Guid> projectRepository, IRepository<ProjectTask, Guid> taskRepository)
         {
             _projectRepository = projectRepository;
+            _taskRepository = taskRepository;
         }
 
         public async Task CreateProjectAsync(CreateUpdateProjectDto createDto)
         {
-            var project = new Project(name: createDto.Name, description: createDto.Description, startDate: createDto.StartDate, endDate: createDto.EndDate);
-            await _projectRepository.InsertAsync(project);
+            try
+            {
+                var project = new Project(name: createDto.Name, description: createDto.Description, startDate: createDto.StartDate, endDate: createDto.EndDate);
+                await _projectRepository.InsertAsync(project);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occurred while creating project");
+                throw;
+            }
+
         }
 
         public async Task DeleteProjectAsync(Guid projectId)
         {
-            var project = await _projectRepository.GetAsync(projectId);
-            await _projectRepository.DeleteAsync(project);
+            try
+            {
+                var project = await _projectRepository.GetAsync(projectId);
+                await _projectRepository.DeleteAsync(project);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occurred while deleting project");
+                throw;
+            }
+
         }
 
         public async Task UpdateProjectAsync(Guid projectId, CreateUpdateProjectDto updateDto)
         {
-            var project = await _projectRepository.GetAsync(projectId);
-            project.Update(name: updateDto.Name, description: updateDto.Description, startDate: updateDto.StartDate, endDate: updateDto.EndDate);
-            await _projectRepository.UpdateAsync(project);
+            try
+            {
+                var project = await _projectRepository.GetAsync(projectId);
+                project.Update(name: updateDto.Name, description: updateDto.Description, startDate: updateDto.StartDate, endDate: updateDto.EndDate);
+                await _projectRepository.UpdateAsync(project);
+            }
+            catch(Exception ex)
+            {
+                Logger.LogError(ex, "Error occurred while updating project");
+                throw;
+            }
+            
         }
         public async Task<List<ProjectDto>> GetAllProjectsAsync()
         {
-            var projects = await _projectRepository.GetListAsync();
-            return projects.Select(project => new ProjectDto(project)).ToList();
+            try
+            {
+                var projects = await _projectRepository.GetListAsync();
+                return projects.Select(project => new ProjectDto(project)).ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occurred while getting list of projects");
+                throw;
+            }
+
         }
 
         public async Task<ProjectDto> FindByIdAsync(Guid projectId)
         {
-            var project = await _projectRepository.GetAsync(projectId);
+            try
+            {
+                var project = await _projectRepository.GetAsync(projectId);
 
-            if (project == null) {
-                return null;
+                if (project == null)
+                {
+                    return null;
+                }
+                return new ProjectDto(project);
             }
-            return new ProjectDto(project);
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occurred while getting project");
+                throw;
+            }
+
         }
 
-        //public async Task<ProjectProgressDto> GetProjectProgressDto(Guid projectId)
-        //{
-        //    var project = _projectRepository.GetAsync(projectId);
-        //    var total = await _projectRepository.GetCountAsync();
-        //}
+        public async Task<ProjectProgressDto> GetProjectProgressAsync(Guid projectId)
+        {
+            try
+            {
+                var project = (await _taskRepository.GetQueryableAsync())
+                 .Where(t => t.ProjectId == projectId);
+
+                var total = await AsyncExecuter.CountAsync(project);
+                var byStatus = await AsyncExecuter.ToListAsync(
+                        project.GroupBy(t => t.Status)
+                             .Select(g => new
+                             {
+                                 Status = g.Key,
+                                 Count = g.Count()
+                             }));
+                var estimated = await AsyncExecuter.SumAsync(project, task => task.EstimatedHours);
+
+                var logged = await AsyncExecuter.SumAsync(project, task => task.LoggedHours);
+
+                return new ProjectProgressDto
+                {
+                    TotalTasks = total,
+                    EstimatedHours = estimated,
+                    LoggedHours = logged
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occurred while getting progress report.");
+                throw;
+            }
+
+        }
     }
 }

@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Amnil.TaskManagement.Enums
+{
+    public enum ProjectTaskStatus
+    {
+        New = 0,
+        InProgress = 1,
+        Completed = 2,
+        Cancelled = 3
+    }
+}

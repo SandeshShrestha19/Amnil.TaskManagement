@@ -13,6 +13,7 @@ namespace Amnil.TaskManagement.DTOs.ProjectDtos
         public string Description { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public List<CreateUpdateTaskDto> Tasks { get; set; } = new();
 
         public ProjectDto(Project project)
         {
