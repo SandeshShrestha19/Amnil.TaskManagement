@@ -14,6 +14,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Amnil.TaskManagement.Entities;
 
 namespace Amnil.TaskManagement.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ public class TaskManagementDbContext :
     IIdentityDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-
+    public DbSet<ProjectTask> Tasks { get; set; }
 
     #region Entities from the modules
 
@@ -78,7 +79,7 @@ public class TaskManagementDbContext :
         builder.ConfigureOpenIddict();
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
-        
+
         /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>
@@ -87,5 +88,10 @@ public class TaskManagementDbContext :
         //    b.ConfigureByConvention(); //auto configure for the base class props
         //    //...
         //});
+        builder.Entity<ProjectTask>(b =>
+        {
+            b.ToTable(TaskManagementConsts.DbTablePrefix + "Tasks", TaskManagementConsts.DbSchema);
+            b.ConfigureByConvention(); 
+        });
     }
 }
