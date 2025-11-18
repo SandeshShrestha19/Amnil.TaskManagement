@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Amnil.TaskManagement.Entities;
 using Amnil.TaskManagement.Enums;
 
 namespace Amnil.TaskManagement.DTOs
@@ -18,5 +19,16 @@ namespace Amnil.TaskManagement.DTOs
         public Guid ProjectId { get; set; }
         public int EstimatedHours { get; set; }
         public int LoggedHours { get; set; }
+        public TaskDto(ProjectTask task)
+        {
+            Name = task.Name;
+            Description = task.Description;
+            Status = task.Status;
+            Priority = task.Priority;
+            UserId = task.UserId;
+            ProjectId = task.ProjectId;
+            EstimatedHours = task.EstimatedHours;
+            LoggedHours = task.LoggedHours;
+        }
     }
 }

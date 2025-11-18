@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Amnil.TaskManagement.Domain.Shared\Amnil.TaskManagement.Domain.Shared.csproj" />
+    <ProjectReference Include="..\Amnil.TaskManagement.Domain\Amnil.TaskManagement.Domain.csproj" />
   </ItemGroup>
   
   <ItemGroup>

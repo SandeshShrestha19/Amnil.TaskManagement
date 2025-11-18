@@ -40,7 +40,7 @@ namespace Amnil.TaskManagement.Entities
         }
         public void AddToProject(Guid projectId)
         {
-
+            ProjectId = projectId;
         }
 
         public void UpdateStatus(ProjectTaskStatus status)
@@ -53,11 +53,12 @@ namespace Amnil.TaskManagement.Entities
             LoggedHours += hours;
         }
 
-        public void Update(string name, string description, Priority priority,Guid userId,Guid projectId, int estimatedHours, int loggedHours)
+        public void Update(string name, string description,ProjectTaskStatus status, Priority priority,Guid userId,Guid projectId, int estimatedHours, int loggedHours)
         {
             Name = name;
             Description = description;
             Priority = priority;
+            Status = status;
             EstimatedHours = estimatedHours;
             LoggedHours = loggedHours;
             UserId = userId;
