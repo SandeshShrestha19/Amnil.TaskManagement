@@ -82,7 +82,6 @@ public class TaskManagementDbContext :
         builder.ConfigureTenantManagement();
         builder.ConfigureBlobStoring();
 
-        /* Configure your own tables/entities inside here */
 
         //builder.Entity<YourEntity>(b =>
         //{
