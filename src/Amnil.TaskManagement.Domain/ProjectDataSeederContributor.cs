@@ -13,10 +13,12 @@ namespace Amnil.TaskManagement
     public class ProjectDataSeederContributor : IDataSeedContributor, ITransientDependency
     {
         private readonly IRepository<Project, Guid> _projectRepository;
+        private readonly IRepository<User, Guid> _userRepository;
 
-        public ProjectDataSeederContributor(IRepository<Project, Guid> projectRepository)
+        public ProjectDataSeederContributor(IRepository<Project, Guid> projectRepository, IRepository<User, Guid> userRepository)
         {
             _projectRepository = projectRepository;
+            _userRepository = userRepository;
         }
         public async Task SeedAsync(DataSeedContext context)
         {
@@ -24,6 +26,11 @@ namespace Amnil.TaskManagement
             {
                 var project = new Project(name: "Health Project", description: "Do something enjoyful and eat healthy",startDate: DateTime.UtcNow,endDate: new DateTime(2025, 12, 31));
                 await _projectRepository.InsertAsync(project, autoSave: true);
+            }
+            if(await _userRepository.GetCountAsync() <= 0)
+            {
+                var user = new User(userName: "Something", email: "something11@gmail.com");
+                await _userRepository.InsertAsync(user, autoSave: true);
             }
         }
     }
